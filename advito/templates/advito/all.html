@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+</head>
+
+<body>
+    <p>Всем привет! Добро пожаловать на доску объявлений - advito!</p>
+    <p>Последние объявления</p>
+    {% for post in posts %}
+        <p><a href="{% url 'post_detail' post.id %}">{{ post }}</a></p>
+    {% endfor %}
+</body>
+
+</html>

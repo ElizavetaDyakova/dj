@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.header }}}</title>
+</head>
+
+<body>
+    <p>
+        <img alt="post image" src="{{ post.image.url }}"
+             style="width: 250px; height: 250px;">
+    </p>
+    <p>Автор: {{ post.author }}</p>
+    <p>{{ post.category.name }}</p>
+    <p>Дата публикации: {{ post.date_pub }}</p>
+    <p>{{ post.header }}</p>
+    <p>{{ post.description }}</p>
+</body>
+
+</html>
