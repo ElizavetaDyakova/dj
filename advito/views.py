@@ -1,12 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Add, Profile, Category
+from django.template import loader
 
 def index(request):
     '''
     вьюха для главной страницы
     '''
-    return HttpResponse('Доска объявлений')
+    post_queryset = Add.objects.filter('-date_pub')[:7]
+    template = loader.get_template('advito/index.html')
+    context = {
+        'posts': post_queryset,
+    }
+    return HttpResponse(template.render(context))
 
 
 def all(request):
@@ -21,7 +27,8 @@ def post_detail(request, add_id):
     '''
     вьюха для объявления
     '''
-    responce = "Детальное представление объявления №{}".format(add_id)
+    post = Add.objects.get(id=add_id)
+    responce = "Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
     return HttpResponse(responce)
 
 
@@ -29,7 +36,8 @@ def category(request, category_id):
     '''
     вьюха для объявлений по категориям
     '''
-    responce = "Категория №{}".format(category_id)
+    post = Add.objects.get(id=add_id)
+    responce = "Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
     return HttpResponse(responce)
 
 
@@ -37,7 +45,8 @@ def post_edit(request, add_id):
     '''
     вьюха для редактирования объявления
     '''
-    responce = "Редактирование объявления №{}".format(add_id)
+    post = Add.objects.get(id=add_id)
+    responce = "Редактирование поста Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
     return HttpResponse(responce)
 
 
@@ -53,7 +62,8 @@ def post_delete(request, add_id):
     '''
     вьюха для удаления объявления
     '''
-    responce = "Удаление объявления №{}".format(add_id)
+    post = Add.objects.get(id=add_id)
+    responce = "Удаление поста Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
     return HttpResponse(responce)
 
 
@@ -61,5 +71,6 @@ def like_post(request, add_id):
     '''
     вьюха для добавления объявления в избранное
     '''
-    responce = "Добавить в избранное объявление №{}".format(add_id)
+    post = Add.objects.get(id=add_id)
+    responce = "Добавить в избранное пост Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
     return HttpResponse(responce)
