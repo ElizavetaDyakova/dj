@@ -1,44 +1,68 @@
 from django.shortcuts import render
+from django.http import HttpResponse, Http404
 from django.http import HttpResponse
 from .models import Add, Profile, Category
 from django.template import loader
+
 
 def index(request):
     '''
     вьюха для главной страницы
     '''
-    post_queryset = Add.objects.filter('-date_pub')[:7]
-    template = loader.get_template('advito/index.html')
+    post_queryset = Add.objects.order_by('-date_pub')[:7]
     context = {
         'posts': post_queryset,
     }
-    return HttpResponse(template.render(context))
+    return render(request, 'advito/index.html', context)
+
+
+def cat_ord(request):
+    '''
+    вьюха для просмотра постов по категориям
+    '''
+    post_queryset = Add.objects.order_by('-date_pub')[:7]
+    context = {
+        'posts': post_queryset,
+    }
+    return render(request, 'advito/index.html', context)
 
 
 def all(request):
     '''
     вьюха для страницы новых объявлений
     '''
-    responce = "Всем привет! Добро пожаловать на доску объявлений - advito!"
-    return HttpResponse(responce)
+    post_queryset = Add.objects.order_by('-date_pub')
+    template = loader.get_template('advito/all.html')
+    context = {
+        'posts': post_queryset,
+    }
+    return HttpResponse(template.render(context))
 
 
 def post_detail(request, add_id):
     '''
     вьюха для объявления
     '''
-    post = Add.objects.get(id=add_id)
-    responce = "Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
-    return HttpResponse(responce)
+    try:
+        post = Add.objects.get(id=add_id)
+    except Add.DoesNotExist:
+        raise Http404("Post doesnt exist")
+    context = {
+        'post': post,
+    }
+    return render(request, 'advito/post-detail.html', context)
 
 
-def category(request, category_id):
+def category(request):
     '''
     вьюха для объявлений по категориям
     '''
-    post = Add.objects.get(id=add_id)
-    responce = "Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
-    return HttpResponse(responce)
+    categ_queryset = Category.objects.all()
+    template = loader.get_template('advito/cat.html')
+    context = {
+        'categ':categ_queryset,
+    }
+    return HttpResponse(template.render(context))
 
 
 def post_edit(request, add_id):
