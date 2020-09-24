@@ -4,15 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная страница</title>
+    <title>{{ category.name }}</title>
 </head>
 
 <body>
-    <p>Всем привет! Добро пожаловать на доску объявлений - advito!</p>
-    <p>Последние объявления</p>
+{% if posts %}
     {% for post in posts %}
-        <p><a href="{% url 'post_detail' post.id %}">{{ post }}</a></p>
+        <a href="{% url 'post_detail' post.id %}">
+            <p>{{ post.author }}</p>
+                   <p>{{ post.date_pub }}</p>
+                   <p>
+                       <img alt="posts image" src="{{ post.image.url }}"
+                            style="width: 250px; height: 250px;">
+                   </p>
+                   <p>{{ post.header }}</p>
+        </a>
     {% endfor %}
+    {% else %}
+    <p>К сожалению, пока объявлений по данной категории нету:(</p>
+{% endif %}
 </body>
 
 </html>

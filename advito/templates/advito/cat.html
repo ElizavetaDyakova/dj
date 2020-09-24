@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная страница</title>
+    <title>Категории</title>
 </head>
 
 <body>
     <p>Категории объявлений</p>
-    {% for cat in categ %}
-        <p><a href="{% url 'post_detail' cat.id %}">{{ cat }}</a></p>
-    {% endfor %}
+     {% for cat in categ %}
+        <p><a href="{% url 'categ' cat.id %}">{{ cat.name }}</a></p>
+     {% endfor %}
 </body>
 
 </html>
