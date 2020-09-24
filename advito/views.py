@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.http import HttpResponse
 from .models import Add, Profile, Category
@@ -16,15 +16,16 @@ def index(request):
     return render(request, 'advito/index.html', context)
 
 
-def cat_ord(request):
+def cat_ord(request, category_id):
     '''
     вьюха для просмотра постов по категориям
     '''
-    post_queryset = Add.objects.order_by('-date_pub')[:7]
+    category = get_object_or_404(Category, category=category_id)
+    posts = Add.objects.filter(category=category)
     context = {
-        'posts': post_queryset,
+        'posts': posts,
     }
-    return render(request, 'advito/index.html', context)
+    return render(request, 'advito/cat_ord.html', context)
 
 
 def all(request):
