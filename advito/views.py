@@ -20,8 +20,8 @@ def cat_ord(request, category_id):
     '''
     вьюха для просмотра постов по категориям
     '''
-    category = get_object_or_404(Category, category=category_id)
-    posts = Add.objects.filter(category=category)
+    category = get_object_or_404(Category, id=category_id)
+    posts = Add.objects.filter(category=category_id)
     context = {
         'posts': posts,
     }
@@ -30,7 +30,7 @@ def cat_ord(request, category_id):
 
 def all(request):
     '''
-    вьюха для страницы новых объявлений
+    вьюха для страницы всех объявлений
     '''
     post_queryset = Add.objects.order_by('-date_pub')
     template = loader.get_template('advito/all.html')
@@ -45,7 +45,7 @@ def post_detail(request, add_id):
     вьюха для объявления
     '''
     try:
-        post = Add.objects.get(id=add_id)
+        post = get_object_or_404(Add, id=add_id)
     except Add.DoesNotExist:
         raise Http404("Post doesnt exist")
     context = {
@@ -56,12 +56,12 @@ def post_detail(request, add_id):
 
 def category(request):
     '''
-    вьюха для объявлений по категориям
+    вьюха для категорий
     '''
     categ_queryset = Category.objects.all()
     template = loader.get_template('advito/cat.html')
     context = {
-        'categ':categ_queryset,
+        'categ': categ_queryset,
     }
     return HttpResponse(template.render(context))
 
