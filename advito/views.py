@@ -21,7 +21,7 @@ def cat_ord(request, category_id):
     вьюха для просмотра постов по категориям
     '''
     category = get_object_or_404(Category, id=category_id)
-    posts = Add.objects.filter(category=category_id)
+    posts = Add.objects.filter(category=category)
     context = {
         'posts': posts,
     }
