@@ -27,7 +27,7 @@ class Profile(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=64, verbose_name='название')
+    name = models.TextField(max_length=64, verbose_name='название')
 
 
 class Add(models.Model):
@@ -46,3 +46,14 @@ class Add(models.Model):
     def __str__(self):
         return 'Author {} date {}'.format(self.author.username, self.date_pub)
 
+class Comment(models.Model):
+    """
+    Коментарий к посту
+    """
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField(max_length=700, blank=False)
+    in_post = models.ForeignKey(Add, on_delete=models.CASCADE)
+    date_publish = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return "{0} : {1}".format(self.author, self.text[:10] + "...")

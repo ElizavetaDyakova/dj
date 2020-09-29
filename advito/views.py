@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, Http404
 from django.http import HttpResponse
+from django.db.models import Sum
 from .models import Add, Profile, Category
 from django.template import loader
+from .forms import PostForm, CatForm
 
 
 def index(request):
@@ -79,8 +81,26 @@ def post_create(request):
     '''
     вьюха для создания объявления
     '''
-    responce = "Создание объявления"
-    return HttpResponse(responce)
+    form = PostForm()
+    template_name = 'advito/post_create.html'
+    context = {'form': form}
+    if request.method == "GET":
+        return render(request, template_name, context)
+    elif request.method == "POST":
+        form = PostForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            context['post_was_created'] = True
+            return render(request, template_name, context)
+        else:
+            context['post_was_created'] = False
+            context['form'] = form
+            return render(request, template_name, context)
+
+    return render(request, 'advito/post_create.html', {'form': form})
 
 
 def post_delete(request, add_id):
@@ -92,10 +112,41 @@ def post_delete(request, add_id):
     return HttpResponse(responce)
 
 
+def categ_create(request):
+    '''
+    вьюха для создания объявления
+    '''
+    form_cat = CatForm()
+    template_name = 'advito/cat_create.html'
+    context = {'form': form_cat}
+    if request.method == "GET":
+        return render(request, template_name, context)
+    elif request.method == "POST":
+        form_cat = PostForm(request.POST)
+
+        if form_cat.is_valid():
+            cat = form_cat.save(commit=False)
+            cat.author = request.user
+            cat.save()
+            context['cat_was_created'] = True
+            return render(request, template_name, context)
+        else:
+            context['cat_was_created'] = False
+            context['form_cat'] = form_cat
+            return render(request, template_name, context)
+
+    return render(request, 'advito/cat_create.html', {'form_cat': form_cat})
+
+
 def like_post(request, add_id):
     '''
     вьюха для добавления объявления в избранное
     '''
     post = Add.objects.get(id=add_id)
-    responce = "Добавить в избранное пост Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
-    return HttpResponse(responce)
+    if request.user in post.favourites.all():
+        like = post.favourites.get(pk=request.user.id)
+        post.favourites.remove(like)
+    else:
+        post.favourites.add(request.user)
+        post.save()
+    return redirect(request.META.get('HTTP_REFERER'), request)
