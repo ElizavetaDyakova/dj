@@ -10,7 +10,15 @@
 <body>
     <p>Все объявления</p>
     {% for post in posts %}
-        <p><a href="{% url 'post_detail' post.id %}">{{ post }}</a></p>
+        <a href="{% url 'post_detail' post.id %}">
+            <p>{{ post.author }}</p>
+                   <p>{{ post.date_pub }}</p>
+                   <p>
+                       <img alt="posts image" src="{{ post.image.url }}"
+                            style="width: 250px; height: 250px;">
+                   </p>
+                   <p>{{ post.header }}</p>
+        </a>
     {% endfor %}
 </body>
 
