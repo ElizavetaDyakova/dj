@@ -50,7 +50,7 @@ class Comment(models.Model):
     """
     Коментарий к посту
     """
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     text = models.TextField(max_length=700, blank=False)
     in_post = models.ForeignKey(Add, on_delete=models.CASCADE)
     date_publish = models.DateTimeField(default=timezone.now)
