@@ -1,21 +1,79 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
-from django.http import HttpResponse
-from django.db.models import Sum
-from .models import Add, Profile, Category
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.utils import timezone
 from django.template import loader
-from .forms import PostForm, CatForm
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .exceptions import PermissionDenied
+from .forms import PostForm, CatForm, CommentForm
+from advito.models import Add, Category, Comment
 
 
-def index(request):
+class IndexView(ListView):
     '''
     вьюха для главной страницы
     '''
-    post_queryset = Add.objects.order_by('-date_pub')[:7]
-    context = {
-        'posts': post_queryset,
-    }
-    return render(request, 'advito/index.html', context)
+    model = Add
+    template_name = 'advito/index.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Add.objects.order_by('-date_pub')[:7]
+
+
+class AllView(ListView):
+    '''
+    вьюха для страницы всех объявлений
+    '''
+    model = Add
+    template_name = 'advito/all.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Add.objects.order_by('-date_pub')
+
+
+class PostView(DetailView):
+    '''
+    вьюха для просмотра поста
+    '''
+    model = Add
+    context_object_name = 'post'
+    comment_form = CommentForm
+    pk_url_kwarg = 'add_id'
+    template_name = 'advito/post-detail.html'
+
+    def get(self, request, add_id, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        context['comments'] = Comment.objects.filter(in_post__id=add_id).order_by('-date_publish')
+        context['comment_form'] = None
+        if request.user.is_authenticated:
+            context['comment_form'] = self.comment_form
+        return self.render_to_response(context)
+
+    @method_decorator(login_required)
+    def post(self, request, add_id, *args, **kwargs):
+        post = get_object_or_404(Add, id=add_id)
+        form = self.comment_form(request.POST)
+        if form.is_valid():
+            comment = form.save()
+            comment.author = request.user
+            comment.in_post = post
+            comment.save()
+            return render(request, self.template_name, context={
+                'comment_form': self.comment_form,
+                'post': post,
+                'comments': comment_set.order_by('-date_publish')
+            })
+        else:
+            return render(request, self.template_name, context={
+                'comment_form': form,
+                'post': post,
+                'comments': comment_set.order_by('-date_publish')
+            })
 
 
 def cat_ord(request, category_id):
@@ -30,30 +88,57 @@ def cat_ord(request, category_id):
     return render(request, 'advito/cat_ord.html', context)
 
 
-def all(request):
+class CreatePostView(CreateView):
     '''
-    вьюха для страницы всех объявлений
+    вьха для создания поста
     '''
-    post_queryset = Add.objects.order_by('-date_pub')
-    template = loader.get_template('advito/all.html')
-    context = {
-        'posts': post_queryset,
-    }
-    return HttpResponse(template.render(context))
+    form_class = PostForm
+    template_name = 'advito/post_create.html'
+
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES)
+        context = {}
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            context['post_was_created'] = True
+            context['form'] = self.form_class
+            return render(request, self.template_name, context)
+        else:
+            context['post_was_created'] = False
+            context['form'] = form
+            return render(request, self.template_name, context)
 
 
-def post_detail(request, add_id):
+class DeletePostView(DeleteView):
     '''
-    вьюха для объявления
+    вьюха для удаления поста
     '''
-    try:
-        post = get_object_or_404(Add, id=add_id)
-    except Add.DoesNotExist:
-        raise Http404("Post doesnt exist")
-    context = {
-        'post': post,
-    }
-    return render(request, 'advito/post-detail.html', context)
+    model = Add
+    context_object_name = 'post'
+    pk_url_kwarg = 'add_id'
+    template_name = 'advito/post_delete.html'
+
+    def get_success_url(self):
+        add_id = self.kwargs['add_id']
+        return reverse('delete-post-success', args=(add_id, ))
+
+#
+# def post_detail(request, add_id):
+#     '''
+#     вьюха для объявления
+#     '''
+#     try:
+#         post = get_object_or_404(Add, id=add_id)
+#     except Add.DoesNotExist:
+#         raise Http404("Post doesnt exist")
+#     context = {
+#         'post': post,
+#     }
+#     return render(request, 'advito/post-detail.html', context)
 
 
 def category(request):
@@ -68,48 +153,21 @@ def category(request):
     return HttpResponse(template.render(context))
 
 
-def post_edit(request, add_id):
-    '''
-    вьюха для редактирования объявления
-    '''
-    post = Add.objects.get(id=add_id)
-    responce = "Редактирование поста Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
-    return HttpResponse(responce)
+class EditPostView(UpdateView):
+    model = Add
+    pk_url_kwarg = 'add_id'
+    template_name = 'advito/post_edit.html'
+    form_class = PostForm
 
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.author != self.request.user:
+            raise PermissionDenied("You are not author of this post")
+        return super(EditPostView, self).dispatch(request, *args, **kwargs)
 
-def post_create(request):
-    '''
-    вьюха для создания объявления
-    '''
-    form = PostForm()
-    template_name = 'advito/post_create.html'
-    context = {'form': form}
-    if request.method == "GET":
-        return render(request, template_name, context)
-    elif request.method == "POST":
-        form = PostForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            context['post_was_created'] = True
-            return render(request, template_name, context)
-        else:
-            context['post_was_created'] = False
-            context['form'] = form
-            return render(request, template_name, context)
-
-    return render(request, 'advito/post_create.html', {'form': form})
-
-
-def post_delete(request, add_id):
-    '''
-    вьюха для удаления объявления
-    '''
-    post = Add.objects.get(id=add_id)
-    responce = "Удаление поста Автор:{}| Название:{}| Описание:{}".format(post.author, post.header, post.description)
-    return HttpResponse(responce)
+    def get_success_url(self):
+        add_id = self.kwargs['add_id']
+        return reverse('advito:post_detail', args=(add_id, ))
 
 
 def categ_create(request):
@@ -118,11 +176,11 @@ def categ_create(request):
     '''
     form_cat = CatForm()
     template_name = 'advito/cat_create.html'
-    context = {'form': form_cat}
+    context = {'form_cat': form_cat}
     if request.method == "GET":
         return render(request, template_name, context)
     elif request.method == "POST":
-        form_cat = PostForm(request.POST)
+        form_cat = CatForm(request.POST)
 
         if form_cat.is_valid():
             cat = form_cat.save(commit=False)
@@ -138,15 +196,4 @@ def categ_create(request):
     return render(request, 'advito/cat_create.html', {'form_cat': form_cat})
 
 
-def like_post(request, add_id):
-    '''
-    вьюха для добавления объявления в избранное
-    '''
-    post = Add.objects.get(id=add_id)
-    if request.user in post.favourites.all():
-        like = post.favourites.get(pk=request.user.id)
-        post.favourites.remove(like)
-    else:
-        post.favourites.add(request.user)
-        post.save()
-    return redirect(request.META.get('HTTP_REFERER'), request)
+
