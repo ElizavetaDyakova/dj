@@ -7,9 +7,8 @@ from django.template import loader
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .exceptions import PermissionDenied
-from .forms import PostForm, CatForm, CommentForm, LoginForm, SignupForm, UpdateProfileForm
+from .forms import PostForm, CatForm, CommentForm, SignupForm, LoginForm, UpdateProfileForm
 from advito.models import Add, Category, Comment, Profile
-
 
 class IndexView(ListView):
     '''
@@ -113,19 +112,19 @@ class CreatePostView(CreateView):
             return render(request, self.template_name, context)
 
 
-class DeletePostView(DeleteView):
-    '''
-    вьюха для удаления поста
-    '''
-    model = Add
-    context_object_name = 'post'
-    pk_url_kwarg = 'add_id'
-    template_name = 'advito/post_delete.html'
-
-    def get_success_url(self):
-        add_id = self.kwargs['add_id']
-        return reverse('delete-post-success', args=(add_id, ))
-
+# class DeletePostView(DeleteView):
+#     '''
+#     вьюха для удаления поста
+#     '''
+#     model = Add
+#     context_object_name = 'post'
+#     pk_url_kwarg = 'add_id'
+#     template_name = 'advito/post_delete.html'
+#
+#     def get_success_url(self):
+#         add_id = self.kwargs['add_id']
+#         return reverse('delete-post-success', args=(add_id, ))
+#
 
 def category(request):
     '''
@@ -139,21 +138,21 @@ def category(request):
     return HttpResponse(template.render(context))
 
 
-class EditPostView(UpdateView):
-    model = Add
-    pk_url_kwarg = 'add_id'
-    template_name = 'advito/post_edit.html'
-    form_class = PostForm
-
-    def dispatch(self, request, *args, **kwargs):
-        obj = self.get_object()
-        if obj.author != self.request.user:
-            raise PermissionDenied("You are not author of this post")
-        return super(EditPostView, self).dispatch(request, *args, **kwargs)
-
-    def get_success_url(self):
-        add_id = self.kwargs['add_id']
-        return reverse('advito:post_detail', args=(add_id, ))
+# class EditPostView(UpdateView):
+#     model = Add
+#     pk_url_kwarg = 'add_id'
+#     template_name = 'advito/post_edit.html'
+#     form_class = PostForm
+#
+#     def dispatch(self, request, *args, **kwargs):
+#         obj = self.get_object()
+#         if obj.author != self.request.user:
+#             raise PermissionDenied("You are not author of this post")
+#         return super(EditPostView, self).dispatch(request, *args, **kwargs)
+#
+#     def get_success_url(self):
+#         add_id = self.kwargs['add_id']
+#         return reverse('advito:post_detail', args=(add_id, ))
 
 
 def categ_create(request):
@@ -198,7 +197,7 @@ class LoginView(LoginView):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect(reverse('core:index'), request)
+                return redirect(reverse('index'), request)
             else:
                 context = {}
                 context['form'] = form
@@ -210,7 +209,7 @@ class LoginView(LoginView):
 
 class ProfileView(DetailView):
     model = Profile
-    template_name = 'core/profile.html'
+    template_name = 'advito/profile.html'
 
     def get_object(self):
         return get_object_or_404(Profile, user__id=self.kwargs['user_id'])
@@ -219,7 +218,7 @@ class ProfileView(DetailView):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect(reverse("core:index"))
+    return redirect(reverse("index"))
 
 
 class SignupView(View):
@@ -249,7 +248,7 @@ class SignupView(View):
 class EditProfileView(UpdateView):
     model = Profile
     form_class = UpdateProfileForm
-    template_name = 'core/edit_profile.html'
+    template_name = 'advito/edit_profile.html'
     slug_field = "user_id"
     slug_url_kwarg = "user_id"
 
@@ -261,7 +260,7 @@ class EditProfileView(UpdateView):
 
     def get_success_url(self):
         user_id = self.kwargs['user_id']
-        return reverse('core:profile', args=(user_id,))
+        return reverse('profile', args=(user_id,))
 
 
 
