@@ -132,10 +132,11 @@ class UpdateProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['birth_date', 'about', 'ava']
+        fields = ['birth_date', 'about', 'ava', 'phone_number']
         labels = {
                 'about': "Обо мне",
                 'ava': "Аватар",
+                'phone_number': "Номер телефона",
                 }
         widgets = {
             'about': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Обо мне'}),
