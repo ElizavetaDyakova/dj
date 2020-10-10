@@ -13,14 +13,11 @@
              style="width: 250px; height: 250px;">
     </p>
     <p>Автор: {{ post.author }}</p>
-    <p>{{ post.category.name }}</p>
+    <p><a href="#">{{ post.category.name }}</a></p>
     <p>Дата публикации: {{ post.date_pub }}</p>
     <p>{{ post.header }}</p>
-    <p>{{ post.description }}</p>
-<form method="post" action="{% url 'like_post' post.id %}">
-    {% csrf_token %}
-    <button type="submit">Add to favorites</button>
-</form>
+    <p>Описание: {{ post.description }}</p>
+
 </body>
 
 </html>

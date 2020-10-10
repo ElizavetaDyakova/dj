@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1> <i class='nickname'> {{ profile.user.username }} </i> </h1>
+    <h2> Дата рождения:
+    {% if profile.date_birth %}
+        <i> {{ profile.date_birth|date:"d F Y" }} </i>
+        {% else %}
+        <i>Не указано</i>
+    {% endif %}
+    </h2>
+    <h2>Телефон
+    {% if profile.phone_number %}
+        <a href="tel:{{ profile.phone_number }}">{{ profile.phone_number }}</a>
+    {% endif%}</h2>
+    <h2> Обо мне:
+    {% if profile.about %}
+        <i> {{ profile.about }} </i>
+    {% endif %}
+    </h2>
+    {% if profile.ava %}
+    <h2> <img style="width: 350px; height: 350px;" src= '{{ profile.ava.url }}'/> </h2>
+    {% endif %}
+    {% if user.id == profile.user.id %}
+        <a href="#" >  Редактировать профиль  </a>
+    {% else %}
+        {% csrf_token %}
+    {% endif %}
+
+
+        <a href="#posts" data-toggle="collapse" class="btn create_btn">
+            Посты
+        </a>
+    {% if profile.user.post.all  %}
+    <li class='active'>
+    <!-- Элементы с постами -->
+            {% for post in profile.user.post.all %}
+                <a href='{% url 'post_detail' post.id %}'> <img class="card-img-top" src = '{{ post.image.url }}' alt="Card image cap"> </a>
+                  <p class="card-text"> {{ post.description }}</p>
+                    <small class="text-muted"> <a href= '{% url 'profile' post.author.id%}'> {{post.author.username}} </a> </small>
+
+            {% endfor %}
+    <!-- Конец элементов с постами -->
+    {% else %}
+            <a> Постов нет. </a>
+    {% endif %}
+</body>
+</html>
