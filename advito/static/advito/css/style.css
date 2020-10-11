@@ -1,3 +1,9 @@
 body{
     background-color: #fff0e1;
 }
+main,
+header,
+footer{
+    max-width: 1400px;
+    margin: 0 auto;
+}
