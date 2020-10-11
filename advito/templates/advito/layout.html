@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'advito/css/style.css' %}">
+</head>
+<body>
+{% include 'advito/_header.html' %}
+{% block unique_content %}
+{% endblock unique_content %}
+{% include 'advito/_footer.html' %}
+</body>
+</html>

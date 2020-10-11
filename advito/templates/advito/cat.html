@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Категории</title>
-</head>
-
-<body>
+{% extends 'advito/layout.html' %}
+{% block unique_content %}
     <p>Категории объявлений</p>
      {% for cat in categ %}
         <p><a href="{% url 'categ' cat.id %}">{{ cat.name }}</a></p>

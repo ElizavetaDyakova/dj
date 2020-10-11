@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Создать объявление</title>
-</head>
-<body>
+{% extends 'advito/layout.html' %}
+{% block unique_content %}
     <form enctype="multipart/form-data" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Опубликовать</button>
     </form>
-</body>
-</html>
+{% endblock unique_content %}

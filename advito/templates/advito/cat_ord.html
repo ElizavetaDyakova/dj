@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ category.name }}</title>
-</head>
-
-<body>
+{% extends 'advito/layout.html' %}
+{% block unique_content %}
 {% if posts %}
     {% for post in posts %}
         <a href="{% url 'post_detail' post.id %}">
@@ -23,6 +15,4 @@
     {% else %}
     <p>К сожалению, пока объявлений по данной категории нету:(</p>
 {% endif %}
-</body>
-
-</html>
+{% endblock unique_content %}

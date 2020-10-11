@@ -1,23 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ post.header }}</title>
-</head>
-
-<body>
-    <p>
+{% extends 'advito/layout.html' %}
+{% block unique_content %}
+{% if post %}
+        <p>
         <img alt="post image" src="{{ post.image.url }}"
              style="width: 250px; height: 250px;">
-    </p>
-    <p>Автор: {{ post.author }}</p>
-    <p><a href="#">{{ post.category.name }}</a></p>
-    <p>Дата публикации: {{ post.date_pub }}</p>
-    <p>{{ post.header }}</p>
-    <p>Описание: {{ post.description }}</p>
-
-</body>
-
-</html>
+        </p>
+        <p>Автор: <a href= '{% url 'profile' post.author.id%}'> {{post.author.username}} </a></p>
+        <p>{{ post.category.name }}</p>
+        <p>Дата публикации: {{ post.date_pub }}</p>
+        <p>{{ post.header }}</p>
+        <p>Описание: {{ post.description }}</p>
+        {% csrf_token %}
+    {% if post.author == user %}
+            <a class='btn btn-info' href='{% url 'post_edit' post.id %}'> Редактировать пост </a>
+        {% endif %}
+{#        <h1> Комментарии </h1>#}
+{#            {% if comments.all %}#}
+{#            {% for comment in comments.all %}#}
+{#            <hr>#}
+{#                <h3> <b> {{ comment.author.username }} </b> : {{comment.text}} </h3>#}
+{#                <p> {{comment.date_publish|date:"d F G:i" }} </p>#}
+{#            {% endfor %}#}
+{#            {% else %}#}
+{#                <h3> Комментариев нет. Вы можете стать первым. </h3>#}
+{#            {% endif %}#}
+{#            <hr>#}
+{#            {% if comment_form %}#}
+{#                <form method='POST'>#}
+{#                    <p> Комментарий:#}
+{#                    {% csrf_token %} {{comment_form.text}} </p>#}
+{#                <button type='submit'> Отправить </button>#}
+{#                </form>#}
+{#            {% else %}#}
+{#                <p> Комментарии только для зарегистрированных пользователей </p>#}
+{#            {% endif %}#}
+    {% endif %}
+{% endblock unique_content %}

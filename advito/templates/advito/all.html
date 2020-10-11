@@ -1,17 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Все объявления</title>
-</head>
-
-<body>
+{% extends 'advito/layout.html' %}
+{% block unique_content %}
     <p>Все объявления</p>
     {% for post in posts %}
         <a href="{% url 'post_detail' post.id %}">
-            <a href= '{% url 'profile' post.author.id%}'> {{post.author.username}} </a>
+                    <p>{{post.author.username}}</p>
                    <p>{{ post.date_pub }}</p>
                    <p>
                        <img alt="posts image" src="{{ post.image.url }}"
@@ -20,6 +12,4 @@
                    <p>{{ post.header }}</p>
         </a>
     {% endfor %}
-</body>
-
-</html>
+{% endblock unique_content %}

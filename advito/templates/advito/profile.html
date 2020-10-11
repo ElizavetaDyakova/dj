@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'advito/layout.html' %}
+{% block unique_content %}
 <h1> <i class='nickname'> {{ profile.user.username }} </i> </h1>
     <h2> Дата рождения:
     {% if profile.date_birth %}
@@ -35,11 +30,11 @@
         <a href="#posts" data-toggle="collapse" class="btn create_btn">
             Посты
         </a>
-    {% if profile.user.post.all  %}
+    {% if user.post.all  %}
     <li class='active'>
     <!-- Элементы с постами -->
             {% for post in profile.user.post.all %}
-                <a href='{% url 'post_detail' post.id %}'> <img class="card-img-top" src = '{{ post.image.url }}' alt="Card image cap"> </a>
+                <a href='{% url 'post_detail' post.id %}'> <img src = '{{ post.image.url }}' alt="Card image cap"> </a>
                   <p class="card-text"> {{ post.description }}</p>
                     <small class="text-muted"> <a href= '{% url 'profile' post.author.id%}'> {{post.author.username}} </a> </small>
 
@@ -48,5 +43,4 @@
     {% else %}
             <a> Постов нет. </a>
     {% endif %}
-</body>
-</html>
+{% endblock unique_content %}

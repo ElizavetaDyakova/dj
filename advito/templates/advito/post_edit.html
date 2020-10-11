@@ -1,0 +1,23 @@
+{% extends 'advito/layout.html' %}
+{% block unique_content %}
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {% for field in form %}
+            {{field}}
+        {% endfor %}
+    <button type="submit" class="btn btn-info text-center" > Принять изменения </button>
+    </form>
+    <form action ='{% url 'post_delete' add.id %}' method="get">
+        {% csrf_token %}
+            <button type="submit" class='btn btn-danger'> Удалить пост </button>
+    </form>
+{% if post.author == user %}
+
+<form method="post", enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Принять изменения</button>
+</form>
+    <a href="{% url 'post_delete' post.id%}">Удалить пост</a>
+
+{% endif %}
+{% endblock unique_content %}
