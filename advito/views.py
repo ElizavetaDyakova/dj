@@ -10,6 +10,7 @@ from .exceptions import PermissionDenied
 from .forms import PostForm, CatForm, CommentForm, SignupForm, LoginForm, UpdateProfileForm
 from advito.models import Add, Category, Comment, Profile
 
+
 class IndexView(ListView):
     '''
     вьюха для главной страницы
@@ -62,16 +63,17 @@ class PostView(DetailView):
             comment.author = request.user
             comment.in_post = post
             comment.save()
+            comments = post.comment_set.all()
             return render(request, self.template_name, context={
                 'comment_form': self.comment_form,
                 'post': post,
-                'comments': comment_set.order_by('-date_publish')
+                'comments': comments.order_by('-date_publish')
             })
         else:
             return render(request, self.template_name, context={
                 'comment_form': form,
                 'post': post,
-                'comments': comment_set.order_by('-date_publish')
+                'comments': comments.order_by('-date_publish')
             })
 
 
@@ -112,19 +114,19 @@ class CreatePostView(CreateView):
             return render(request, self.template_name, context)
 
 
-# class DeletePostView(DeleteView):
-#     '''
-#     вьюха для удаления поста
-#     '''
-#     model = Add
-#     context_object_name = 'post'
-#     pk_url_kwarg = 'add_id'
-#     template_name = 'advito/post_delete.html'
-#
-#     def get_success_url(self):
-#         add_id = self.kwargs['add_id']
-#         return reverse('delete-post-success', args=(add_id, ))
-#
+class DeletePostView(DeleteView):
+    '''
+    вьюха для удаления поста
+    '''
+    model = Add
+    context_object_name = 'post'
+    pk_url_kwarg = 'add_id'
+    template_name = 'advito/post_delete.html'
+
+    def get_success_url(self):
+        add_id = self.kwargs['add_id']
+        return reverse('delete-post-success', args=(add_id, ))
+
 
 def category(request):
     '''
@@ -138,21 +140,21 @@ def category(request):
     return HttpResponse(template.render(context))
 
 
-# class EditPostView(UpdateView):
-#     model = Add
-#     pk_url_kwarg = 'add_id'
-#     template_name = 'advito/post_edit.html'
-#     form_class = PostForm
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         obj = self.get_object()
-#         if obj.author != self.request.user:
-#             raise PermissionDenied("You are not author of this post")
-#         return super(EditPostView, self).dispatch(request, *args, **kwargs)
-#
-#     def get_success_url(self):
-#         add_id = self.kwargs['add_id']
-#         return reverse('advito:post_detail', args=(add_id, ))
+class EditPostView(UpdateView):
+    model = Add
+    pk_url_kwarg = 'add_id'
+    template_name = 'advito/post_edit.html'
+    form_class = PostForm
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.author != self.request.user:
+            raise PermissionDenied("You are not author of this post")
+        return super(EditPostView, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        add_id = self.kwargs['add_id']
+        return reverse('advito:post_detail', args=(add_id, ))
 
 
 def categ_create(request):
