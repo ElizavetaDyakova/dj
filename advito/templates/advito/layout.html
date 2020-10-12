@@ -7,9 +7,39 @@
     <link rel="stylesheet" type="text/css" href="{% static 'advito/css/style.css' %}">
 </head>
 <body>
-{% include 'advito/_header.html' %}
+
+<header>
+    <nav>
+        <ul class="header-nav">
+            <li class="link-menu name">
+                <a href="{% url 'index' %}">Advito</a>
+            </li>
+            <li>
+                <a href="{% url 'category' %}">Категории</a>
+            </li>
+            <li>
+                <a href="{% url 'all' %}">Объявления</a>
+            </li>
+            <li>
+                {% if user.is_authenticated %}
+                    <form action="{% url 'logout' %}" method="GET">
+                        {% csrf_token %}
+                        <button type="submit"> Logout </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}"> Login </a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</header>
+<main>
 {% block unique_content %}
 {% endblock unique_content %}
-{% include 'advito/_footer.html' %}
+</main>
+<footer>
+
+</footer>
+
 </body>
 </html>

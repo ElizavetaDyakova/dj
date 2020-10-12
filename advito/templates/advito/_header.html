@@ -1,11 +1,25 @@
 <header>
-    <a href="{% url 'index' %}">Главная</a>
-    {% if user.is_authenticated %}
-    <form action="{% url 'logout' %}" method="GET">
-    {% csrf_token %}
-        <button type="submit"> Logout </button>
-    </form>
-    {% else %}
-    <a href="{% url 'login' %}"> Login </a>
-    {% endif %}
+    <nav>
+        <ul class="header-nav">
+            <li class="link-menu">
+                <a class="name" href="{% url 'index' %}">Advito</a>
+            </li>
+            <li class="link-menu">
+                <a href="{% url 'category' %}">Категории</a>
+            </li>
+            <li class="link-menu">
+                <a href="{% url 'all' %}">Объявления</a>
+            </li>
+            <li class="link-menu">
+                {% if user.is_authenticated %}
+                    <form action="{% url 'logout' %}" method="GET">
+                        {% csrf_token %}
+                        <button type="submit"> Logout </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}"> Login </a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
 </header>

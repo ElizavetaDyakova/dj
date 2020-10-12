@@ -3,17 +3,17 @@
     <p>Всем привет! Добро пожаловать на доску объявлений - advito!</p>
     <p>Последние объявления</p>
     {% if posts %}
-    <ul>
+    <ul class="post-set">
        {% for post in posts %}
-           <li>
+           <li class="post-set-block">
                <a href="{% url 'post_detail' post.id %}">
-                   <p>{{ post.author }}</p>
-                   <p>{{ post.date_pub }}</p>
                    <p>
                        <img alt="posts image" src="{{ post.image.url }}"
                             style="width: 250px; height: 250px;">
                    </p>
+                   <p>{{ post.author }}</p>
                    <p>{{ post.header }}</p>
+                   <p>{{ post.date_pub }}</p>
                </a>
            </li>
            {% endfor %}

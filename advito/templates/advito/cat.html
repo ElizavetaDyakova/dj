@@ -4,6 +4,4 @@
      {% for cat in categ %}
         <p><a href="{% url 'categ' cat.id %}">{{ cat.name }}</a></p>
      {% endfor %}
-</body>
-
-</html>
+{% endblock unique_content %}
