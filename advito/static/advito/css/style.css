@@ -1,9 +1,42 @@
 body{
-    background-color: #fff0e1;
+    background-color: #f4eaff;
+    font-family: 'Montserrat', sans-serif;
+    color: #0d0b0b;
+}
+li{
+    list-style-type: none;
+}
+a{
+    text-decoration: none;
+    color: #0d0b0b;
+}
+.name{
+    font-family: 'Chilanka', cursive;
+    font-size: 35px;
+}
+a:visited{
+    opacity: 70%;
 }
 main,
 header,
 footer{
     max-width: 1400px;
     margin: 0 auto;
+}
+.header-nav {
+    display: flex;
+    align-content: space-between;
+}
+ul{
+    padding: 0;
+}
+.post-set{
+    display: flex;
+    align-content: space-between
+}
+.post-set-block{
+    width: 20%;
+}
+.link-menu{
+    padding: 10px;
 }
