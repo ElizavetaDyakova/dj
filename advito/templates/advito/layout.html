@@ -9,7 +9,7 @@
 <body>
 
 <header>
-    <nav>
+    <nav class="container">
         <ul class="header-nav">
             <li class="link-menu name">
                 <a href="{% url 'index' %}">Advito</a>
@@ -34,11 +34,15 @@
     </nav>
 </header>
 <main>
-{% block unique_content %}
-{% endblock unique_content %}
+    <section class="container">
+        {% block unique_content %}
+        {% endblock unique_content %}
+    </section>
 </main>
 <footer>
+    <section class="container">
 
+    </section>
 </footer>
 
 </body>
