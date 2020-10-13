@@ -1,29 +1,24 @@
 <header>
-    <nav>
+    <nav class="container">
         <ul class="header-nav">
-            <li class="link-menu">
-                <a class="name" href="{% url 'index' %}">Advito</a>
+            <li class="link-menu name">
+                <a href="http://127.0.0.1:8000/">Advito</a>
             </li>
-        <li class="link-menu">
-                <a class="name" href="{% url 'index' %}">Категории</a>
+            <li class="link-menu link-me">
+                <a href="http://127.0.0.1:8000/category/">Категории</a>
             </li>
-        <li class="link-menu">
-                <a class="name" href="{% url 'index' %}">Объявления</a>
+            <li class="link-menu link-me">
+                <a href="http://127.0.0.1:8000/profile/">Мой профиль</a>
             </li>
-        <li class="link-menu">
-                <a class="name" href="{% url 'index' %}">Создать пост</a>
+            <li class="link-menu link-me">
+                <a href="http://127.0.0.1:8000/post_create/">Создать объявление</a>
             </li>
-        <li class="link-menu">
-                {% if user.is_authenticated %}
-                    <form action="{% url 'logout' %}" method="GET">
-                        {% csrf_token %}
-                        <button type="submit"> Logout </button>
-                    </form>
-                {% else %}
-                    <a href="{% url 'login' %}"> Login </a>
-                {% endif %}
+            <li class="link-menu link-me">
+                <form action="http://127.0.0.1:8000/logout/" method="GET">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="15O8F1LBd338fY2SOEoKtRJjFfhEa8uH7TgRY9i4DR2RsueU2aziphEGkVET9Qml">
+                    <button type="submit"> Logout </button>
+                </form>
             </li>
-            
         </ul>
     </nav>
 </header>

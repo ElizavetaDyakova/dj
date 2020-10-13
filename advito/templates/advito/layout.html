@@ -14,13 +14,13 @@
             <li class="link-menu name">
                 <a href="{% url 'index' %}">Advito</a>
             </li>
-            <li>
+            <li class="link-menu link-me">
                 <a href="{% url 'category' %}">Категории</a>
             </li>
-            <li>
-                <a href="{% url 'all' %}">Объявления</a>
+            <li class="link-menu link-me">
+                <a href="{% url 'profile' user.id %}">Профиль</a>
             </li>
-            <li>
+            <li class="link-menu link-me">
                 {% if user.is_authenticated %}
                     <form action="{% url 'logout' %}" method="GET">
                         {% csrf_token %}
