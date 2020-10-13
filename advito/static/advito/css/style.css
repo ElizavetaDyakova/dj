@@ -1,25 +1,20 @@
 body{
-    background-color: #f4eaff;
     font-family: 'Montserrat', sans-serif;
-    color: #0d0b0b;
+    margin: 0;
+    padding: 0;
 }
 li{
     list-style-type: none;
 }
 a{
     text-decoration: none;
-    color: #0d0b0b;
+    /*color: #0d0b0b;*/
 }
 .name{
     font-family: 'Chilanka', cursive;
     font-size: 35px;
 }
-a:visited{
-    opacity: 70%;
-}
-main,
-header,
-footer{
+.container{
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -29,6 +24,7 @@ footer{
 }
 ul{
     padding: 0;
+    margin: 0;
 }
 .post-set{
     display: flex;
@@ -38,5 +34,19 @@ ul{
     width: 20%;
 }
 .link-menu{
+    color: #E2E2E2;
+    margin: 10px;
+}
+.header-nav a:visited{
+    color: #E2E2E2;
+}
+header{
+    height: 78px;
+    background: #BC8C5A;
+}
+main{
+    background-color: #F0F0EF;
+    margin: 0;
     padding: 10px;
+    height: auto;
 }
